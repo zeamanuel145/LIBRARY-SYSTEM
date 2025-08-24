@@ -1,0 +1,40 @@
+.modal-bg{
+    z-index:1;
+    background-color:rgba(0,0,0,0.2);
+    width:100%;
+    height:100%;
+    position: fixed; /* Changed from absolute to fixed */
+    top:0;
+    left:0;
+    display: flex; /* Added to center the modal */
+    align-items: center;
+    justify-content: center;
+}
+
+.modal{
+    z-index:5;
+    width:30%;
+    height:fit-content;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative; /* Changed from sticky to relative */
+    border-radius:16px;
+    box-shadow:var(--box-shadow);
+    background-color:var(--background-primary);
+    /* Removed transform positioning as flexbox handles centering */
+    padding-left:16px;
+    padding-right:16px;
+    padding-bottom:16px;
+    max-width: 400px; /* Added max-width for better responsiveness */
+    min-width: 300px; /* Added min-width */
+}
+
+.modal-exit{
+    align-self:flex-end; /* Changed from flex-start to flex-end */
+    cursor:pointer;
+    margin: 8px 0; /* Added some margin */
+    font-size: 1.2rem; /* Made the X bigger */
+    font-weight: bold;
+}

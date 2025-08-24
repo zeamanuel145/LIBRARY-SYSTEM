@@ -1,0 +1,61 @@
+import {Request,Response} from 'express';
+import {register,login} from '../services/UserService';
+import {IUser} from '../models/User';
+import { IUserModel } from '../daos/UserDao';
+import { InvalidUsernameOrPasswordError } from '../utils/LibraryErrors';
+
+
+
+async function handleRegister(req:Request,res:Response){
+    const user:IUser=req.body;
+    try{
+        const registeredUser=await register(user);
+        res.status(201).json({
+            message:'User registered successfully',
+            user:{
+                _id:registeredUser._id,
+                type:registeredUser.type,
+                firstName:registeredUser.firstName,
+                lastName:registeredUser.lastName,
+                email:registeredUser.email
+            }
+        });
+    }catch(error:any){
+        if(error.message.includes('E11000 duplicate key error collection')){
+            return res.status(409).json({
+                message:"Email already exists",
+                error:error.message
+            });
+        }
+        res.status(500).json({
+            message:"Unable to register user at this time",
+            error:error.message
+        });
+    }
+}
+
+async function handleLogin(req:Request,res:Response){
+    const credentials=req.body;
+    try{
+        const loggedIn:IUserModel=await login(credentials);
+        res.status(200).json({
+            message:"User logged in successfully",
+            user:{
+                _id:loggedIn._id,
+                type:loggedIn.type,
+                firstName:loggedIn.firstName,
+                lastName:loggedIn.lastName,
+                email:loggedIn.email
+            }
+        });
+    }
+    catch(error:any){
+
+        if (error instanceof InvalidUsernameOrPasswordError)
+            res.status(401).json({message:"Invalid username or password", error:error.message});
+        else
+            res.status(500).json({message:"Unable to log in user at this time", error:error.message});
+
+    }
+};
+export default {handleRegister, handleLogin}
